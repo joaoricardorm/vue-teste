@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Teste</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <style>
+    *, body, html {
+      box-sizing: content-box;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+  
+  <!--bootstrap-->
+  
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/10b81f4d16.js"></script>
+
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+    <h1 class="m-5 text-center" style="color:red">Lista de Coisas</h1>
+    
+    <br>
+
+    <form class="needs-validation was-validated" novalidate=""  v-on:submit.prevent="onSubmit"></form> 
+      <h3>Adicionar item</h3>
+        <div class="form-row align-items-center">
+
+          <div class="col-auto">
+            <label class="sr-only" for="inlineFormInputNome">Nome</label>
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text"><i class="fa fa-user"></i></div>
+              </div>
+              <input v-model="item.nome" type="text" class="form-control" id="inlineFormInputNome" placeholder="Nome">
+
+
+              <div class="invalid-feedback">
+                  Please choose a username.
+                </div>
+
+            </div>
+          </div>
+
+          <div class="col-auto">
+            <label class="sr-only" for="inlineFormInputGroup">Idade</label>
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text"><i class="fa fa-birthday-cake"></i></div>
+              </div>
+              <input v-model="item.idade" type="text" class="form-control" id="inlineFormInputGroup" placeholder="Idade">
+            </div>
+          </div>
+          <div class="col-auto">
+            <button v-on:click="salvar" type="submit" class="btn btn-primary mb-2"><i class="fa fa-save mr-1"></i> Salvar</button>
+          </div>
+        </div>
+
+      </form>
+
+      <hr>
+
+      <h3>Itens</h3>
+
+      <button v-if="lista.length" v-on:click="excluirTudo" type="submit" class="btn btn-danger btn-sm mt-2 mb-2"><i class="fa fa-trash mr-1"></i> Remover Tudo</button>
+
+      <legend class="text-muted" v-if="!lista.length"></i> Nenhum item pra ser exibido <i class="fa fa-dove"></i></legend>
+
+    <ul class="list-group">
+        <li class="list-group-item" v-for="item in lista">
+            <strong class="text-capitalize">{{item.nome}}</strong>
+            <span v-if="item.idade || 'gordo'">
+              {{item.idade}} anos
+            </span>  
+            <span class="float-right" v-on:click="excluir(item.id)" :data-id="item.id">
+              <i class="fa fa-check text-muted"></i>
+            </span>
+        </li>
+    </ul>
+
+    </div><!--container-->
+  </div><!--app-->
+
+  <script>
+    app = new Vue({
+     el: "#app",
+     data: {
+        item: {},
+        listaOriginal: [
+          { 
+              nome: 'joão ricardo',
+              idade: '24'
+          },
+          { 
+              nome: 'eder',
+              idade: '25'
+          },
+        ],
+        message: 35,
+        lista: [],        
+     },
+     created: function(){
+        carregaLista = JSON.parse(localStorage.getItem('lista'));
+        if(carregaLista)
+          this.lista = carregaLista;
+     },
+     rendered: function(){
+       
+     },
+     methods: {
+       salvar: function(){
+        
+          if(!this.item.nome){
+            alert('num tem');
+            return;
+          }
+
+         this.item.id = Math.floor(Math.random() * 6) + 1  ;
+
+         this.lista.push(this.item);
+         this.item = {};
+
+         localStorage.setItem("lista", JSON.stringify(this.lista));
+
+         document.querySelector('#inlineFormInputNome').focus();
+
+         console.log(this.lista, JSON.stringify(this.lista));
+       },
+       excluirTudo: function(){
+         this.lista = [];
+         localStorage.clear('lista')
+       },
+       excluir: function(id){
+         alert(id);
+        //console.log(this.lista);
+          var result = this.lista.filter(obj => {
+            return obj.id === id;
+          });
+          result.pop()
+       }
+     }
+    })
+  </script>
+</body>
+</html>
